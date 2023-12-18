@@ -1,3 +1,5 @@
+set -e
+
 git clone https://github.com/gitlab-az1/ydlx.git /tmp/ydlx
 
 cd /tmp/ydlx
@@ -5,7 +7,7 @@ npm install
 npm run build
 
 sudo cp -r /tmp/ydlx/dist "$HOME/.ydlx"
-sudo cp -r /tmp/ydlx/.script "$HOME/.ydlx"
+sudo cp -r /tmp/ydlx/.script "$HOME/.ydlx/.script"
 sudo cp -r /tmp/ydlx/package.build.json "$HOME/.ydlx"
 sudo cp -r /tmp/ydlx/README.md "$HOME/.ydlx"
 sudo cp -r /tmp/ydlx/LICENSE "$HOME/.ydlx"
@@ -14,11 +16,14 @@ sudo rm -rf /tmp/ydlx
 
 cd "$HOME/.ydlx"
 
-python3 -m venv .venv
-source .venv/bin/activate
+sudo python3 -m venv .venv
+sudo chmod -R 777 ./.venv
+source ./.venv/bin/activate
 
 python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
+
+sudo chmod -R 777 "$HOME/.ydlx"
 
 mv ./package.build.json ./package.json
 mv ./bin/main ./bin/ydlx
