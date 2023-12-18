@@ -150,8 +150,8 @@ async function _RetriveLogs(): Promise<void> {
 
     for(const item of logs) {
       const contents = await fs.promises.readFile(path.join(logsPath, item), { encoding: 'utf-8' });
-      console.log(`  - ${format.colors.brightYellow}${item}${format.reset}`);
-      console.log('    ' + contents);
+      console.log(`- ${format.colors.brightYellow}${item}${format.reset}\n\n`);
+      console.log(contents);
       console.log('\n\n');
     }
   } catch (err: any) {
@@ -179,8 +179,8 @@ async function _ShowLog(logId: string): Promise<void> {
     console.clear();
 
     console.log(`${format.bold}YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
-    console.log(`${format.bold}Log file: ${format.colors.brightYellow}${logId}${format.reset}\n`);
-    console.log('  ' + contents + '\n');
+    console.log(`${format.bold}Log file: ${format.colors.brightYellow}${logId}${format.reset}\n\n`);
+    console.log(contents + '\n');
   } catch (err: any) {
     return panic(err.message, 1);
   }
