@@ -210,7 +210,7 @@ function extractPathAndFilename(input: string): { path: string, filename: string
 
 async function getPythonExecutablePath(venv: boolean = false): Promise<string> {
   let res = venv ? 
-    path.join(root, '.script', '.venv', 'bin', 'python3') + ' '
+    path.join(process.cwd(), '.script', '.venv', 'bin', 'python3') + ' '
     : 'python3 ';
 
   res += path.join(root, '.script', 'ydl.py');

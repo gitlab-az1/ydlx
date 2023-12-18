@@ -1,4 +1,4 @@
-# ydlx - Open Source YouTube Downloader
+# YDLX - Open Source YouTube Downloader
 
 ## Installation
 
