@@ -33,7 +33,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@resources/*": ["./src/resources/*"]
+      "@resources/*": ["./src/resources/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": ["./src/**/*.ts"],

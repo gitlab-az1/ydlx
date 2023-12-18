@@ -8,6 +8,21 @@ declare interface Logger {
   fatal(message: any): void;
 }
 
+declare interface ParsedArgs {
+  [arg: string]: any;
+
+  /**
+   * If opts['--'] is true, populated with everything after the --
+   */
+  '--'?: string[] | undefined;
+
+  /**
+   * Contains all the arguments that didn't have an option associated with them
+   */
+  _: string[];
+}
+
 
 declare function panic(__message: string, __exitCode: NodeJS.Signals | number): never;
+declare const _Arguments: ParsedArgs;
 declare const logger: Logger;

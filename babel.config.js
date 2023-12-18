@@ -16,6 +16,7 @@ module.exports = {
     ['module-resolver', {
       alias: {
         '@resources': './src/resources',
+        '@utils': './src/utils',
       },
     }],
   ],

@@ -86,7 +86,7 @@ def main() -> None:
     
     stream.download(
       skip_existing=(OVERWRITE == False),
-      filename=(f"{VIDEO_ID}.ydl-cbr.mp4"),
+      filename=(f"{VIDEO_ID}.mp4"),
       output_path=output_path
     )
 

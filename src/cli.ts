@@ -1,8 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { format } from 'typesdk/utils/asci';
 import { createLogger } from 'typesdk/logger';
 import { isProduction } from 'typesdk/constants';
 
 import load_minimist from '@resources/minimist.module';
+import { YouTubeDownloader } from '@resources/downloader';
+import { printUsage, version, spinner } from '@utils/index';
 
 
 process.on('SIGINT', () => {
@@ -22,7 +26,7 @@ process.on('uncaughtException', err => {
 });
 
 
-const logger = createLogger();
+const logger = createLogger({ hideDate: true });
 
 function panic(message: string, __exitCode: NodeJS.Signals | number): never {
   const code = typeof __exitCode === 'string' ? `${format.colors.brightYellow}${__exitCode}${format.reset}` : __exitCode;
@@ -40,14 +44,68 @@ function panic(message: string, __exitCode: NodeJS.Signals | number): never {
 Object.assign(global, { panic, logger });
 
 
-export async function __$exec(argc: number, argv: string[]): Promise<unknown> {
+export async function __$exec(_: number, argv: string[]): Promise<unknown> {
   const args = load_minimist(argv, {
     alias: {
       h: 'help',
       o: 'output',
       v: 'version',
+      q: 'quality',
     },
   });
 
-  return logger.trace({ argc, argv, args });
+  Object.assign(global, { _Arguments: args });
+  console.clear();
+
+  if(args.help) {
+    printUsage();
+    return process.exit(0);
+  }
+
+  if(args.version) {
+    console.log(`${format.bold}YDLX${format.reset} - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}`);
+    return process.exit(0);
+  }
+
+  const [video] = args._;
+  if(!video) return panic('no video url provided', 1);
+
+  
+  try {
+    const downloader = new YouTubeDownloader(video);
+
+    if(args.quality) {
+      downloader.quality(args.quality);
+    }
+
+    const outputPath = typeof args.output === 'string' ? args.output : undefined;
+
+    const output = args['audio-only'] ?
+      await downloader.extractAudio(outputPath) : 
+      await downloader.download(outputPath);
+
+    let outputFilename = output.filename;
+
+    if(args['set-name'] && typeof args['set-name'] === 'string' && args['set-name'].trim().length > 0) {
+      const hasExt = /\.[a-z0-9]{3,4}$/.test(args['set-name']);
+      outputFilename = hasExt ? args['set-name'] : `${args['set-name']}.${args['audio-only'] ? 'mp3' : 'mp4'}`;
+
+      const _renamePromise = () => fs.promises.rename(
+        path.join(output.path, output.filename),
+        path.join(output.path, outputFilename) // eslint-disable-line comma-dangle
+      );
+
+      if(args.verbose) {
+        await spinner(`renaming file to ${format.colors.brightYellow}${args['set-name']}${format.reset}`, _renamePromise);
+        logger.info(`renamed file to ${format.colors.brightYellow}${args['set-name']}${format.reset}`);
+      } else {
+        await _renamePromise();
+      }
+    }
+
+    logger.success(`downloaded ${format.colors.brightYellow}${outputFilename}${format.reset} to ${format.colors.brightYellow}${output.path}${format.reset}`);    
+    process.exit(0);
+  } catch (err: any) {
+    panic(err.message, 1);
+  }
 }

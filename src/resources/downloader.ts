@@ -1,3 +1,4 @@
+import os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';
 import { root } from 'typesdk/constants';
@@ -5,6 +6,7 @@ import { Deferred } from 'typesdk/async';
 import { Exception } from 'typesdk/errors';
 import { Process, ProcessOutput } from 'typesdk/process';
 
+import { spinner } from '@utils/index';
 import { ensureDir } from '@resources/fs';
 
 
@@ -40,6 +42,10 @@ export class YouTubeDownloader {
       resolution: '720p',
       fallbackResolution: 'low',
     };
+
+    if(_Arguments.verbose) {
+      logger.info(`loaded video https://youtube.com/watch?v=${video}`);
+    }
   }
 
   public get videoId(): string {
@@ -67,11 +73,17 @@ export class YouTubeDownloader {
       fallbackResolution: fallback,
     };
 
+    if(_Arguments.verbose) {
+      logger.info(`set quality to ${q} (fallback: ${fallback})`);
+    }
+
     return this;
   }
 
 
   async #DoDownload(outpath?: string): Promise<Out> {
+    outpath ??= path.join(os.homedir(), 'Downloads');
+
     if(outpath) {
       await ensureDir(outpath);
     }
@@ -113,7 +125,14 @@ export class YouTubeDownloader {
     };
 
     try {
-      const out = await proc.run();
+      const out = _Arguments.verbose ? 
+        await spinner('Downloading video...', () => proc.run()) :
+        await proc.run();
+
+      if(_Arguments.verbose) {
+        logger.info('Download completed\n');
+      }
+
       onCompleted(out);
     } catch (err: any) {
       onRejected(err as ProcessOutput);
@@ -133,7 +152,7 @@ export class YouTubeDownloader {
     if(outpath) {
       download.path = outpath;
     } else {
-      download.path = path.join(download.path, 'out');
+      download.path = path.join(os.homedir(), 'Downloads');
     }
 
     const videoPath = path.join(download.path, download.filename);
@@ -150,7 +169,13 @@ export class YouTubeDownloader {
     const deferred = new Deferred<Out, Exception>();
 
     try {
-      const out = await proc.run();
+      const out = _Arguments.verbose ? 
+        await spinner('Extracting audio...', () => proc.run()) :
+        await proc.run();
+
+      if(_Arguments.verbose) {
+        logger.info('Audio extraction completed\n');
+      }
 
       if(out.stdout.includes('error')) {
         deferred.reject(new Exception(out.stdout));
@@ -179,7 +204,7 @@ function extractPathAndFilename(input: string): { path: string, filename: string
 
   const videoId = match[1];
   const path = match[2];
-  return { path, filename: `${videoId}.ydl-cbr.mp4` };
+  return { path, filename: `${videoId}.mp4` };
 }
 
 
