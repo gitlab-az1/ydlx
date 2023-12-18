@@ -1,41 +1,73 @@
-# Clone the Git repository
-git clone https://github.com/gitlab-az1/ydlx.git C:\Temp\ydlx
+# Define variables
+$homePath = $env:USERPROFILE
+$profilePath = Join-Path $homePath "Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
+$ydlxPath = Join-Path $homePath ".ydlx"
 
-# Navigate to the cloned repository
-cd C:\Temp\ydlx
+# Function to write to profile
+function Write-Profile {
+  $pattern = 'export PATH="$home\.ydlx\bin;$env:PATH"'
 
-# Install Node.js dependencies and build the project
+  # Check if the pattern exists in the profile
+  if(Select-String -Path $profilePath -Pattern $pattern) {
+    Write-Host "Pattern '$pattern' already exists in $profilePath."
+  } else {
+    Add-Content -Path $profilePath -Value $pattern
+    Write-Host "Line containing '$pattern' added to $profilePath."
+  }
+}
+
+# Clone repository
+git clone https://github.com/gitlab-az1/ydlx.git "$env:TEMP\ydlx"
+
+# Change directory
+cd "$env:TEMP\ydlx"
+
+# Install npm packages and build
 npm install
 npm run build
 
-# Copy files to the installation directory (C:\Users\<YourUsername>\.ydlx)
-Copy-Item -Recurse -Force .\dist "$env:USERPROFILE\.ydlx"
-Copy-Item -Recurse -Force .\.script "$env:USERPROFILE\.ydlx"
-Copy-Item -Recurse -Force .\package.build.json "$env:USERPROFILE\.ydlx"
-Copy-Item -Recurse -Force .\README.md "$env:USERPROFILE\.ydlx"
-Copy-Item -Recurse -Force .\LICENSE "$env:USERPROFILE\.ydlx"
+# Copy files to .ydlx directory
+Copy-Item -Recurse -Force .\dist "$ydlxPath"
+Copy-Item -Recurse -Force .\.script "$ydlxPath\.script"
+Copy-Item -Recurse -Force .\package.build.json "$ydlxPath"
+Copy-Item -Recurse -Force .\README.md "$ydlxPath"
+Copy-Item -Recurse -Force .\LICENSE "$ydlxPath"
 
-# Remove the temporary directory
-Remove-Item -Recurse -Force C:\Temp\ydlx
+# Remove temporary directory
+Remove-Item -Recurse -Force "$env:TEMP\ydlx"
 
-# Navigate to the installation directory
-cd "$env:USERPROFILE\.ydlx"
+# Change directory to .ydlx\.script
+cd "$ydlxPath\.script"
 
-# Set up a Python virtual environment
-python -m venv .venv
-. .\.venv\Scripts\Activate
+# Create virtual environment
+python3 -m venv .venv
+chmod -R 777 .\.venv
+.\.venv\Scripts\Activate.ps1
 
-# Upgrade pip and install Python dependencies
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+# Upgrade pip and install requirements
+python3 -m pip install --upgrade pip
+python3 -m pip install -r .\requirements.txt
 
-# Rename files and directories
+# Change directory back to .ydlx
+cd $ydlxPath
+
+# Set permissions for .ydlx directory
+chmod -R 777 $ydlxPath
+
+# Rename files
 Rename-Item .\package.build.json .\package.json
 Rename-Item .\bin\main .\bin\ydlx
 
-# Modify the user's profile to include the tool's binary directory in the PATH
-$profilePath = "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
-Add-Content $profilePath -Value "``$env:PATH += \";$env:USERPROFILE\.ydlx\bin\""
+# Set permissions for ydlx executable
+chmod -R 755 .\bin\ydlx
 
-# Reload the PowerShell profile to apply the changes
-. $profilePath
+# Install ydlx
+yarn install --production
+
+# Write to the profile
+Write-Profile
+
+# Display installation success message
+Write-Host "The installation was successful."
+Write-Host ""
+Write-Host "Now, to use ydlx, restart PowerShell."
