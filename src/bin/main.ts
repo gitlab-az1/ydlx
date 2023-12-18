@@ -3,7 +3,7 @@
 'use strict';
 process.env.NODE_ENV = 'production';
 Object.assign(global, {
-  _InstanceID: _GetRandomID(),
+  _InstanceID: `x${_GetRandomID()}`,
 });
 
 function _GetRandomID(): string {
