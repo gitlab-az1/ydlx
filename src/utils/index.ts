@@ -49,4 +49,4 @@ export async function spinner<T>(
 }
 
 
-export const root = _Prod === true ? path.join(os.homedir(), '.ydlx') : process.cwd();
+export const root = global._Prod === true ? path.join(os.homedir(), '.ydlx') : process.cwd();
