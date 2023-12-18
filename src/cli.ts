@@ -1,6 +1,6 @@
-import { isProduction } from 'typesdk/constants';
-import { createLogger } from 'typesdk/logger';
 import { format } from 'typesdk/utils/asci';
+import { createLogger } from 'typesdk/logger';
+import { isProduction } from 'typesdk/constants';
 
 import load_minimist from '@resources/minimist.module';
 
