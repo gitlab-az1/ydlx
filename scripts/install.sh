@@ -13,11 +13,11 @@ write_bashrc() {
 
   # Check if the pattern was found
   if [ -n "$line_number" ]; then
-      # Use sed to delete the line with the specified line number
-      sed -i "${line_number}d" "$filename"
-      echo "Line containing '$pattern' deleted from $filename."
+    # Use sed to delete the line with the specified line number
+    sed -i "${line_number}d" "$filename"
+    echo "Line containing '$pattern' deleted from $filename."
   else
-      echo "Pattern '$pattern' not found in $filename."
+    echo "Pattern '$pattern' not found in $filename."
   fi
 
   cp "$HOME/.bashrc" "$HOME/.bashrc.bak"
@@ -33,8 +33,8 @@ git clone https://github.com/gitlab-az1/ydlx.git /tmp/ydlx
 cd /tmp/ydlx
 
 # Install npm packages and build
-yarn install
-yarn build
+npm install
+npm run build
 
 # Copy files to .ydlx directory
 sudo cp -r /tmp/ydlx/dist "$HOME/.ydlx"
@@ -72,7 +72,7 @@ mv ./bin/main ./bin/ydlx
 sudo chmod -R 755 ./bin/ydlx
 
 # Install ydlx production dependencies
-yarn install --production
+npm run install --production
 
 # Display installation success message
 echo "The installation was successful."
