@@ -4,6 +4,7 @@
 process.env.NODE_ENV = 'production';
 Object.assign(global, {
   _InstanceID: _GetRandomID(),
+  _Prod: true,
 });
 
 function _GetRandomID(): string {

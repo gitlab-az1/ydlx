@@ -56,6 +56,10 @@ async function panic(message: string, __exitCode: NodeJS.Signals | number): Prom
 
 Object.assign(global, { panic, logger });
 
+if(typeof _Prod !== 'boolean') {
+  Object.assign(global, { _Prod: false });
+}
+
 
 export async function __$exec(_: number, argv: string[]): Promise<unknown> {
   const args = load_minimist(argv, {
