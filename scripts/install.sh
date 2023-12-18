@@ -33,8 +33,8 @@ git clone https://github.com/gitlab-az1/ydlx.git /tmp/ydlx
 cd /tmp/ydlx
 
 # Install npm packages and build
-npm install
-npm run build
+yarn install
+yarn build
 
 # Copy files to .ydlx directory
 sudo cp -r /tmp/ydlx/dist "$HOME/.ydlx"
@@ -72,7 +72,7 @@ mv ./bin/main ./bin/ydlx
 sudo chmod -R 755 ./bin/ydlx
 
 # Install ydlx production dependencies
-npm run install --production
+yarn install --production
 
 # Display installation success message
 echo "The installation was successful."

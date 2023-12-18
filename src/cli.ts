@@ -145,14 +145,14 @@ async function _RetriveLogs(): Promise<void> {
     const logs = await fs.promises.readdir(logsPath);
     console.clear();
 
-    console.log(`YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
-    console.log(`Logs found: ${format.colors.brightYellow}${logs.length}${format.reset}\n`);
+    console.log(`${format.bold}YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
+    console.log(`${format.bold}Logs found: ${format.colors.brightYellow}${logs.length}${format.reset}\n`);
 
     for(const item of logs) {
       const contents = await fs.promises.readFile(path.join(logsPath, item), { encoding: 'utf-8' });
-      console.log(`- ${format.colors.brightYellow}${item}${format.reset}`);
-      console.log(contents);
-      console.log('\n');
+      console.log(`  - ${format.colors.brightYellow}${item}${format.reset}`);
+      console.log('    ' + contents);
+      console.log('\n\n');
     }
   } catch (err: any) {
     return panic(err.message, 1);
@@ -178,9 +178,9 @@ async function _ShowLog(logId: string): Promise<void> {
     const contents = await fs.promises.readFile(logFile, { encoding: 'utf-8' });
     console.clear();
 
-    console.log(`YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
-    console.log(`Log file: ${format.colors.brightYellow}${logId}${format.reset}\n`);
-    console.log(contents);
+    console.log(`${format.bold}YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
+    console.log(`${format.bold}Log file: ${format.colors.brightYellow}${logId}${format.reset}\n`);
+    console.log('  ' + contents + '\n');
   } catch (err: any) {
     return panic(err.message, 1);
   }
