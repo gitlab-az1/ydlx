@@ -14,7 +14,9 @@ module.exports = {
     '@babel/plugin-transform-private-methods',
     '@babel/plugin-transform-class-properties',
     ['module-resolver', {
-      alias: {},
+      alias: {
+        '@resources': './src/resources',
+      },
     }],
   ],
 };
