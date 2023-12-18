@@ -11,12 +11,13 @@ export function printUsage(): void {
   msg += '  ydlx <video> [options]\n\n';
 
   msg += `${format.bold}Options:${format.reset}\n`;
-  msg += '  -q, --quality   Sets the video quality. You can use a predefined quality like "high" or "low", or you can use a custom quality like "720p"\n';
-  msg += '  -h, --help      Show this help message and exit\n';
-  msg += '  -v, --version   Show version number and exit\n';
-  msg += '  -o, --output    Sets the output directory\n';
-  msg += '  --audio-only    Downloads only the audio track\n';
-  msg += '  --set-name      Sets the output filename to the video title\n';
+  msg += '  -q, --quality     Sets the video quality. You can use a predefined quality like "high" or "low", or you can use a custom quality like "720p"\n';
+  msg += '  -h, --help        Show this help message and exit\n';
+  msg += '  -v, --version     Show version number and exit\n';
+  msg += '  -o, --output      Sets the output directory\n';
+  msg += '  --audio-only      Downloads only the audio track\n';
+  msg += '  --set-name        Sets the output filename to the video title\n';
+  msg += '  --show-log <id>   Shows the log of a previous download\n';
 
   console.log(msg);
 }

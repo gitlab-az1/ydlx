@@ -89,8 +89,12 @@ export async function __$exec(_: number, argv: string[], _RunArguments?: Running
     return process.exit(0);
   }
 
+  if(args['show-log'] && typeof args['show-log'] === 'string' && args['show-log'].trim().length > 0) return _ShowLog(args['show-log']);
+
   const [video] = args._;
   if(!video) return panic('no video url provided', 1);
+
+  if(video === 'logs') return _RetriveLogs();
 
   
   try {
@@ -127,6 +131,56 @@ export async function __$exec(_: number, argv: string[], _RunArguments?: Running
 
     logger.success(`downloaded ${format.colors.brightYellow}${outputFilename}${format.reset} to ${format.colors.brightYellow}${output.path}${format.reset}`);    
     return process.exit(0);
+  } catch (err: any) {
+    return panic(err.message, 1);
+  }
+}
+
+
+async function _RetriveLogs(): Promise<void> {
+  const logsPath = path.join(_Root, 'logs');
+  if(!fs.existsSync(logsPath)) return process.exit(0);
+
+  try {
+    const logs = await fs.promises.readdir(logsPath);
+    console.clear();
+
+    console.log(`YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
+    console.log(`Logs found: ${format.colors.brightYellow}${logs.length}${format.reset}\n`);
+
+    for(const item of logs) {
+      const contents = await fs.promises.readFile(path.join(logsPath, item), { encoding: 'utf-8' });
+      console.log(`- ${format.colors.brightYellow}${item}${format.reset}`);
+      console.log(contents);
+      console.log('\n');
+    }
+  } catch (err: any) {
+    return panic(err.message, 1);
+  }
+}
+
+async function _ShowLog(logId: string): Promise<void> {
+  const logsPath = path.join(_Root, 'logs');
+
+  if(!fs.existsSync(logsPath)) return (() => {
+    logger.warn('No logs found');
+    return process.exit(0);
+  })();
+
+  if(!logId.endsWith('.log')) {
+    logId += '.log';
+  }
+
+  const logFile = path.join(logsPath, logId);
+  if(!fs.existsSync(logFile)) return panic(`No log found with id ${format.colors.brightYellow}${logId}${format.reset}`, 2);
+
+  try {
+    const contents = await fs.promises.readFile(logFile, { encoding: 'utf-8' });
+    console.clear();
+
+    console.log(`YDLX - ${format.colors.brightYellow}Youtube Downloader${format.reset} v${version}\n`);
+    console.log(`Log file: ${format.colors.brightYellow}${logId}${format.reset}\n`);
+    console.log(contents);
   } catch (err: any) {
     return panic(err.message, 1);
   }

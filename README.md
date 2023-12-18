@@ -44,6 +44,12 @@ bash ./install.sh
 ydlx <url or video id> [options]
 ```
 
+or
+
+```bash
+ydlx logs
+```
+
 ### Options
 
 | Option | Description |
@@ -54,3 +60,4 @@ ydlx <url or video id> [options]
 | `-o`, `--output` | Specify the output directory. |
 | `--audio-only` | Download only the audio. |
 | `--set-name` | Set the name of the output file. |
+| `--show-log <log id>` | Show the log of a download. |
