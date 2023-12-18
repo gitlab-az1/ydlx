@@ -69,7 +69,7 @@ async function main() {
     path.join(buildDir, 'bin', 'main'),
   );
 
-  await fs.promises.chmod(path.join(buildDir, 'main'), 0o755);
+  await fs.promises.chmod(path.join(buildDir, 'bin', 'main'), 0o755);
 }
 
 main().catch(console.error);

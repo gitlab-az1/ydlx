@@ -23,6 +23,7 @@ python3 -m pip install -r requirements.txt
 mv ./package.build.json ./package.json
 mv ./bin/main ./bin/ydlx
 
+sudo chmod -R 755 ./bin/ydlx
 npm install
 
 cp "$HOME/.bashrc" "$HOME/.bashrc.bak"
