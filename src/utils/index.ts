@@ -1,5 +1,3 @@
-import os from 'node:os';
-import path from 'node:path';
 import { format } from 'typesdk/utils/asci';
 
 import version from './_appversion';
@@ -47,6 +45,3 @@ export async function spinner<T>(
 
   return result;
 }
-
-
-export const root = global._Prod === true ? path.join(os.homedir(), '.ydlx') : process.cwd();

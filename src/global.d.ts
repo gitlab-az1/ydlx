@@ -27,10 +27,4 @@ declare function panic(__message: string, __exitCode: NodeJS.Signals | number): 
 declare const _Arguments: ParsedArgs;
 declare const _InstanceID: string;
 declare const logger: Logger;
-
-
-/* eslint-disable */
-
-declare var _Prod: boolean;
-var _Prod = false;
-global._Prod = _Prod;
+declare const _Root: string;

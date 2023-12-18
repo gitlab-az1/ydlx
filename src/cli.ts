@@ -1,3 +1,4 @@
+import os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';
 import { format } from 'typesdk/utils/asci';
@@ -6,7 +7,7 @@ import { createLogger } from 'typesdk/logger';
 import { ensureDir } from '@resources/fs';
 import load_minimist from '@resources/minimist.module';
 import { YouTubeDownloader } from '@resources/downloader';
-import { printUsage, version, spinner, root } from '@utils/index';
+import { printUsage, version, spinner } from '@utils/index';
 
 
 process.on('SIGINT', () => {
@@ -35,7 +36,7 @@ async function panic(message: string, __exitCode: NodeJS.Signals | number): Prom
   console.log(`${format.bold}${format.colors.red}Fatal:${format.reset}${format.reset} process failed with exit code ${code}`);
 
   try {
-    const logsPath = path.join(root, 'logs');
+    const logsPath = path.join(_Root, 'logs');
     await ensureDir(logsPath);
 
     const logFile = path.join(logsPath, `${_InstanceID}.log`);
@@ -56,12 +57,12 @@ async function panic(message: string, __exitCode: NodeJS.Signals | number): Prom
 
 Object.assign(global, { panic, logger });
 
-if(typeof global._Prod !== 'boolean') {
-  Object.assign(global, { _Prod: false });
+
+type RunningArguments = {
+  isProduction: boolean;
 }
 
-
-export async function __$exec(_: number, argv: string[]): Promise<unknown> {
+export async function __$exec(_: number, argv: string[], _RunArguments?: RunningArguments): Promise<unknown> {
   const args = load_minimist(argv, {
     alias: {
       h: 'help',
@@ -71,7 +72,11 @@ export async function __$exec(_: number, argv: string[]): Promise<unknown> {
     },
   });
 
-  Object.assign(global, { _Arguments: args });
+  Object.assign(global, {
+    _Arguments: args,
+    _Root: _RunArguments?.isProduction === true ? path.join(os.homedir(), '.ydlx') : process.cwd(),
+  });
+
   console.clear();
 
   if(args.help) {

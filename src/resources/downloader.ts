@@ -5,8 +5,8 @@ import { Deferred } from 'typesdk/async';
 import { Exception } from 'typesdk/errors';
 import { Process, ProcessOutput } from 'typesdk/process';
 
+import { spinner } from '@utils/index';
 import { ensureDir } from '@resources/fs';
-import { spinner, root } from '@utils/index';
 
 
 export type QualityDescriptor = 'high' | 'medium' | 'low' | `${number}p`;
@@ -209,9 +209,9 @@ function extractPathAndFilename(input: string): { path: string, filename: string
 
 async function getPythonExecutablePath(venv: boolean = false): Promise<string> {
   let res = venv ? 
-    path.join(root, '.script', '.venv', 'bin', 'python3') + ' '
+    path.join(_Root, '.script', '.venv', 'bin', 'python3') + ' '
     : 'python3 ';
 
-  res += path.join(root, '.script', 'ydl.py');
+  res += path.join(_Root, '.script', 'ydl.py');
   return res;
 }

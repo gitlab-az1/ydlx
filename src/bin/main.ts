@@ -4,7 +4,6 @@
 process.env.NODE_ENV = 'production';
 Object.assign(global, {
   _InstanceID: _GetRandomID(),
-  _Prod: true,
 });
 
 function _GetRandomID(): string {
@@ -39,4 +38,4 @@ function _StringShuffle(str: string): string {
 import { __$exec } from '../cli';
 
 const args = process.argv.slice(2);
-__$exec(args.length, args);
+__$exec(args.length, args, { isProduction: true });
