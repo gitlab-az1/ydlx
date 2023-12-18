@@ -65,8 +65,8 @@ async function main() {
     { encoding: 'utf-8' });
 
   await fs.promises.rename(
-    path.join(buildDir, 'main.js'),
-    path.join(buildDir, 'main'),
+    path.join(buildDir, 'bin', 'main.js'),
+    path.join(buildDir, 'bin', 'main'),
   );
 
   await fs.promises.chmod(path.join(buildDir, 'main'), 0o755);
