@@ -1,3 +1,6 @@
+import os from 'node:os';
+import path from 'node:path';
+import { isProduction } from 'typesdk';
 import { format } from 'typesdk/utils/asci';
 
 import version from './_appversion';
@@ -45,3 +48,6 @@ export async function spinner<T>(
 
   return result;
 }
+
+
+export const root = isProduction ? path.join(os.homedir(), '.ydlx') : process.cwd();

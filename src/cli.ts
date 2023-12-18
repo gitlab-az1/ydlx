@@ -6,7 +6,7 @@ import { createLogger } from 'typesdk/logger';
 import { ensureDir } from '@resources/fs';
 import load_minimist from '@resources/minimist.module';
 import { YouTubeDownloader } from '@resources/downloader';
-import { printUsage, version, spinner } from '@utils/index';
+import { printUsage, version, spinner, root } from '@utils/index';
 
 
 process.on('SIGINT', () => {
@@ -35,7 +35,7 @@ async function panic(message: string, __exitCode: NodeJS.Signals | number): Prom
   console.log(`${format.bold}${format.colors.red}Fatal:${format.reset}${format.reset} process failed with exit code ${code}`);
 
   try {
-    const logsPath = path.join(process.cwd(), 'logs');
+    const logsPath = path.join(root, 'logs');
     await ensureDir(logsPath);
 
     const logFile = path.join(logsPath, `${_InstanceID}.log`);
