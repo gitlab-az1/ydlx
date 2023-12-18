@@ -23,6 +23,7 @@ declare interface ParsedArgs {
 }
 
 
-declare function panic(__message: string, __exitCode: NodeJS.Signals | number): never;
+declare function panic(__message: string, __exitCode: NodeJS.Signals | number): Promise<never>;
 declare const _Arguments: ParsedArgs;
+declare const _InstanceID: string;
 declare const logger: Logger;

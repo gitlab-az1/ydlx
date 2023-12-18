@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { format } from 'typesdk/utils/asci';
 import { createLogger } from 'typesdk/logger';
-import { isProduction } from 'typesdk/constants';
 
+import { ensureDir } from '@resources/fs';
 import load_minimist from '@resources/minimist.module';
 import { YouTubeDownloader } from '@resources/downloader';
 import { printUsage, version, spinner } from '@utils/index';
@@ -28,14 +28,27 @@ process.on('uncaughtException', err => {
 
 const logger = createLogger({ hideDate: true });
 
-function panic(message: string, __exitCode: NodeJS.Signals | number): never {
+async function panic(message: string, __exitCode: NodeJS.Signals | number): Promise<never> {
   const code = typeof __exitCode === 'string' ? `${format.colors.brightYellow}${__exitCode}${format.reset}` : __exitCode;
 
   console.log(`\n${format.bold}${format.colors.red}PANIC:${format.reset} ${format.colors.brightYellow}${message}${format.reset}`);
   console.log(`${format.bold}${format.colors.red}Fatal:${format.reset}${format.reset} process failed with exit code ${code}`);
 
-  if(isProduction) {
-    logger.fatal(message);
+  try {
+    const logsPath = path.join(process.cwd(), 'logs');
+    await ensureDir(logsPath);
+
+    const logFile = path.join(logsPath, `${_InstanceID}.log`);
+    let log = '';
+
+    if(fs.existsSync(logFile)) {
+      log = (await fs.promises.readFile(logFile, { encoding: 'utf-8' })).trim();
+    }
+
+    log += `${new Date().toISOString()} [fatal] (failed with exit code ${__exitCode}) ${message}\n`;
+    await fs.promises.writeFile(logFile, log, { encoding: 'utf-8' });
+  } catch (err: any) {
+    console.error(err);
   }
 
   return process.exit(0);
@@ -104,8 +117,8 @@ export async function __$exec(_: number, argv: string[]): Promise<unknown> {
     }
 
     logger.success(`downloaded ${format.colors.brightYellow}${outputFilename}${format.reset} to ${format.colors.brightYellow}${output.path}${format.reset}`);    
-    process.exit(0);
+    return process.exit(0);
   } catch (err: any) {
-    panic(err.message, 1);
+    return panic(err.message, 1);
   }
 }
